@@ -107,6 +107,10 @@ This mathematical property guarantees that even if the maximum oscillates violen
 
 ## 📦 Installation & Usage
 
+### Generating Javascript /dist Files
+
+Run `npm run build`
+
 ### Basic Example
 
 ```javascript
