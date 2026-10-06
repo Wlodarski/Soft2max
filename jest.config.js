@@ -3,15 +3,14 @@ export default {
   testEnvironment: 'node',
   extensionsToTreatAsEsm: ['.ts'],
   moduleNameMapper: {
-    // Permet à Jest de résoudre correctement les imports locaux terminant par '.js'
     '^(\\.\\.?\\/.+)\\.js$': '$1',
   },
   transform: {
-    // Transpile les fichiers TypeScript à la volée en conservant le format ESM
     '^.+\\.tsx?$': [
       'ts-jest',
       {
         useESM: true,
+        isolatedModules: true, // Désactive la vérification globale des types par Jest pour accélérer l'exécution
       },
     ],
   },

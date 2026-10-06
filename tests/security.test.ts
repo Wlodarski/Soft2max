@@ -1,7 +1,7 @@
-import { soft2maxStreamingHeap } from '../dist/soft2max.js'; 
+import { soft2maxStreamingHeap } from '../dist/soft2max.js';
 
 describe('Tests de Sécurité - Validation Runtime', () => {
-  
+
   test('Doit lever une erreur si les inputs ne sont pas un tableau', () => {
     // @ts-expect-error - Test volontaire d'une donnée invalide au runtime
     expect(() => soft2maxStreamingHeap("not-an-array")).toThrow(TypeError);
@@ -10,9 +10,10 @@ describe('Tests de Sécurité - Validation Runtime', () => {
   test('Doit lever une erreur si la structure d\'un objet est invalide', () => {
     const badDataset = [
       { label: 'Option Valide', score: 10 },
-      // @ts-expect-error - Objet mal formé
       { name: 'Option Invalide', score: 20 }
     ];
+    // On applique le flag d'exclusion directement sur la ligne d'exécution
+    // @ts-expect-error - On force le passage d'une structure corrompue au runtime
     expect(() => soft2maxStreamingHeap(badDataset)).toThrow(TypeError);
   });
 
