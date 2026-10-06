@@ -170,6 +170,10 @@ When processing large production datasets (**500,000 items**), Soft2max thorough
 
 🚀 **Result:** Soft2max runs roughly **11x faster** while utilizing drastically less CPU cache and memory.
 
+### To Benchmark On Your Installation
+
+Run `npm run benchmark`
+
 ---
 
 ## 📝 License
