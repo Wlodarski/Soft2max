@@ -9,13 +9,14 @@ A hyper-optimized, single-pass approximation of the Softmax function designed fo
 
 ## 🚀 Why Use Soft2max?
 
-Traditional Softmax functions require expensive floating-point arithmetic (`Math.exp`), multiple loops, and a global sort (\(O(N \log N)\)) to find top elements. 
+Traditional Softmax functions require expensive floating-point arithmetic (`Math.exp`), multiple loops, and a global sort (\(O(N \log N)\)) to find top elements.
 
 **Soft2max** completely rethinks this process for UI streaming contexts:
+
 * **True Single-Pass (\(O(N \log K)\)):** Computes proportions and maintains the Top-K elements concurrently. Perfect for high-throughput streaming datasets.
 * **O(1) Memory Footprint:** Allocates no large intermediate arrays. It tracks only a micro-heap of size K, completely avoiding Garbage Collection overhead.
 * **Ultra-Fast Bit Shifting:** Replaces costly exponential floating-point operations with a single-cycle CPU binary right-shift (`>>`).
-* **UI-Driven Long Tail Handling:** Automatically aggregates dropped or low-percentage elements into an `"Others"` category. 
+* **UI-Driven Long Tail Handling:** Automatically aggregates dropped or low-percentage elements into an `"Others"` category.
 * **Flawless Integer Rounding:** Employs a deterministic adjustment mechanism ensuring total percentages equal **exactly** `100%` (or your target sum) without float rounding anomalies (e.g., `99.9%` or `100.1%`).
 
 ---
@@ -48,7 +49,7 @@ soft2max-streaming/
 
 ## 🛠️ How It Works: Dynamic Retroactive Shifting
 
-The core mathematical challenge of a single-pass Softmax is that the maximum value (`maxVal`) changes dynamically as data streams in. 
+The core mathematical challenge of a single-pass Softmax is that the maximum value (`maxVal`) changes dynamically as data streams in.
 
 If a new absolute maximum is discovered late in the loop, Soft2max calculates the gap (`delta`) between the old and new maximums. It then instantly applies a retroactive bitwise shift (`weight >> delta`) to all previously accumulated history in a fraction of a nanosecond, maintaining mathematical consistency without rereading the dataset.
 
@@ -56,37 +57,49 @@ If a new absolute maximum is discovered late in the loop, Soft2max calculates th
 
 ## 🧮 Mathematical Framework: From \(e^x\) to \(2^x\) Bit-Shifting
 
-The standard Softmax formula maps a vector of arbitrary real numbers z into a probability distribution where each value is proportional to its exponential scale:
+The standard Softmax formula maps a vector of arbitrary real numbers \(z\) into a probability distribution where each value is proportional to its exponential scale:
 
-\[\sigma(z)_i = \frac{e^{z_i}}{\sum_{j=1}^{n} e^{z_j}}\]
+$$
+\sigma(z)_i = \frac{e^{z_i}}{\sum_{j=1}^{n} e^{z_j}}
+$$
 
-To prevent numerical overflow when computing large exponents, production systems employ the **Log-Sum-Exp** safety transformation (subtracting the maximum value \(z_{max}\)):
+To prevent numerical overflow when computing large exponents, production systems employ the **Log-Sum-Exp** safety transformation (subtracting the maximum value \(z_{\max}\)):
 
-\[\sigma(z)_i = \frac{e^{z_i - z_{max}}}{\sum_{j=1}^{n} e^{z_j - z_{max}}}\]
+$$
+\sigma(z)_i = \frac{e^{z_i - z_{\max}}}{\sum_{j=1}^{n} e^{z_j - z_{\max}}}
+$$
 
 ### The Bitwise Approximation
 
-While mathematically ideal, calculating floating-point transcendental functions like \(e^x\) requires dozens of clock cycles per element. **Soft2max** replaces Euler's number (e ≈ 2.718) with a base-2 exponent (2). 
+While mathematically ideal, calculating floating-point transcendental functions like \(e^x\) requires dozens of clock cycles per element. **Soft2max** replaces Euler's number (e ≈ 2.718) with a base-2 exponent (2).
 
 By shifting the base, the exponentiation becomes a pure bit-shift operation, execution-mapped directly to a single-cycle CPU instruction:
 
-\[e^{z_i - z_{max}} \approx 2^{z_i - z_{max}} = 2^{-\Delta_i} = \frac{1}{2^{\Delta_i}}\]
+$$
+e^{z_i - z_{\max}} \approx 2^{z_i - z_{\max}} = 2^{-\Delta_i} = \frac{1}{2^{\Delta_i}}
+$$
 
-Where \(\Delta_i = z_{max} - z_i\). In integer arithmetics, this is computed using a configurable resolution anchor (`shiftBits`) acting as the base numerator:
+Where \(\Delta_i = z_{\max} - z_i\). In integer arithmetic, this is computed using a configurable resolution anchor (`shiftBits`) acting as the base numerator:
 
-\[\text{weight}_i = \text{baseWeight} \gg \Delta_i = (1 \ll \text{shiftBits}) \gg (z_{max} - z_i)\]
+$$
+\text{weight}_i = \text{baseWeight} \gg \Delta_i = (1 \ll \text{shiftBits}) \gg (z_{\max} - z_i)
+$$
 
 ### Dynamic Base Correction Under Streaming Constraints
 
-In a true streaming pipeline, the global \(z_{max}\) is unknown until the very last element is read. If at index t a new maximum \(z_{new} > z_{old}\) is discovered, all previously computed weights are locked to the wrong frame of reference. 
+In a true streaming pipeline, the global \(z_{\max}\) is unknown until the very last element is read. If at index \(t\) a new maximum \(z_{\text{new}} > z_{\text{old}}\) is discovered, all previously computed weights are locked to the wrong frame of reference.
 
-Soft2max resolves this retroactively without restarting the loop. Let \(d = z_{new} - z_{old}\). The mathematical correction requires scaling down the historical weights by \(2^d\):
+Soft2max resolves this retroactively without restarting the loop. Let \(d = z_{\text{new}} - z_{\text{old}}\). The mathematical correction requires scaling down the historical weights by \(2^d\):
 
-\[\text{weight}_{\text{corrected}} = \frac{\text{weight}_{\text{old}}}{2^d} = \text{weight}_{\text{old}} \gg d\]
+$$
+\text{weight}_{\text{corrected}} = \frac{\text{weight}_{\text{old}}}{2^d} = \text{weight}_{\text{old}} \gg d
+$$
 
 Because the summation operator is linear, the aggregate long-tail accumulator (`leftoverWeight`) is updated with identical precision:
 
-\[\text{leftoverWeight}_{\text{new}} = \text{leftoverWeight}_{\text{old}} \gg d\]
+$$
+\text{leftoverWeight}_{\text{new}} = \text{leftoverWeight}_{\text{old}} \gg d
+$$
 
 This mathematical property guarantees that even if the maximum oscillates violently throughout the stream, the final relative proportions remain structurally sound and perfectly synchronized upon loop termination.
 
