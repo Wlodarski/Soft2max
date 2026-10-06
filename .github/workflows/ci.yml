@@ -26,6 +26,9 @@ jobs:
     - name: Run Code Linter & Type Check
       run: npx tsc --noEmit
 
+    - name: Build Library (Compile TS to JS)
+      run: npm run build # Étape cruciale : génère dist/ avant de lancer Jest et le Benchmark
+
     - name: Run Unit & Security Tests
       run: npm test
 

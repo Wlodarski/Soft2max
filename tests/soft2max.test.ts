@@ -1,4 +1,4 @@
-import { soft2maxStreamingHeap, SoftmaxInput, SoftmaxResult } from '../src/soft2max.js';
+import { soft2maxStreamingHeap } from '../dist/soft2max.js';
 
 describe('Tests Unitaires - soft2maxStreamingHeap', () => {
   // Utilitaire pour vérifier si la somme des pourcentages est correcte

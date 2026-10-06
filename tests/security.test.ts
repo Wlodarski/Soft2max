@@ -1,4 +1,4 @@
-import { soft2maxStreamingHeap } from '../src/soft2max.js';
+import { soft2maxStreamingHeap } from '../dist/soft2max.js'; 
 
 describe('Tests de Sécurité - Validation Runtime', () => {
   
