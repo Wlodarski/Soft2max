@@ -111,4 +111,4 @@ console.log(`🟢 Sof2tmax (Streaming + Min-Heap)  : \x1b[32m${avgOpti.toFixed(2
 console.log(`========================================================`);
 
 const speedup = avgTrad / avgOpti;
-console.log(`\n\x1b[1m🚀 Votre algorithme est environ \x1b[32m${speedup.toFixed(1)}x plus rapide\x1b[0m\x1b[1m que la méthode classique !\x1b[0m\n`);
+console.log(`\n\x1b[1m🚀 L'algorithme est environ \x1b[32m${speedup.toFixed(1)}x plus rapide\x1b[0m\x1b[1m que la méthode classique !\x1b[0m\n`);
