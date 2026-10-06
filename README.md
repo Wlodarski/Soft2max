@@ -9,11 +9,11 @@ A hyper-optimized, single-pass approximation of the Softmax function designed fo
 
 ## 🚀 Why Use Soft2max?
 
-Traditional Softmax functions require expensive floating-point arithmetic (`Math.exp`), multiple loops, and a global sort ($O(N \log N)$) to find top elements.
+Traditional Softmax functions require expensive floating-point arithmetic (`Math.exp`), multiple loops, and a global sort $O(N \log N)$ to find top elements.
 
 **Soft2max** completely rethinks this process for UI streaming contexts:
 
-* **True Single-Pass ($O(N \log K)$):** Computes proportions and maintains the Top-$K$ elements concurrently. Perfect for high-throughput streaming datasets.
+* **True Single-Pass $O(N \log K)$ :** Computes proportions and maintains the Top- $K$ elements concurrently. Perfect for high-throughput streaming datasets.
 * **$O(1)$ Memory Footprint:** Allocates no large intermediate arrays. It tracks only a micro-heap of size $K$, completely avoiding Garbage Collection overhead.
 * **Ultra-Fast Bit Shifting:** Replaces costly exponential floating-point operations with a single-cycle CPU binary right-shift (`>>`).
 * **UI-Driven Long Tail Handling:** Automatically aggregates dropped or low-percentage elements into an `"Others"` category.
