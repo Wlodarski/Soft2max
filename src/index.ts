@@ -3,14 +3,18 @@
  * Réexporte toutes les fonctionnalités publiques, types et guards de sécurité.
  */
 
-// Réexportation des types et de la fonction maîtresse
+// 1. Réexportation de la logique de production (Fonctions réelles au runtime)
 export {
-  soft2maxStreamingHeap,
+  soft2maxStreamingHeap
+} from './soft2max.js';
+
+// 2. Réexportation explicite des interfaces (Supprimées à la compilation par isolatedModules)
+export type {
   SoftmaxInput,
   SoftmaxResult
 } from './soft2max.js';
 
-// Réexportation du validateur (utile si un utilisateur souhaite valider ses flux manuellement)
+// 3. Réexportation du validateur au runtime
 export {
   validateSoft2maxArgs
 } from './validation.js';
