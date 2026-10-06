@@ -113,28 +113,27 @@ This mathematical property guarantees that even if the maximum oscillates violen
 import { soft2maxStreamingHeap } from './dist/soft2max.js';
 
 const dataset = [
-  { label: "Option Alpha", score: 85 },
-  { label: "Option Beta",  score: 82 },
-  { label: "Option Gamma", score: 40 }, // Will be sent to "Others" due to low percentage
-  { label: "Option Delta", score: 80 },
-  { label: "Option Zeta",  score: 5 }   // Long tail
+  { label: "Option Alpha", score: 85 }, // Absolute maximum: acts as reference point (gap of 0)
+  { label: "Option Beta",  score: 82 }, // Gap of 3 (<= shiftBits): retained individually
+  { label: "Option Gamma", score: 40 }, // Massive gap (> shiftBits): skipped instantly since weight drops to 0
+  { label: "Option Delta", score: 80 }, // Gap of 5 (<= shiftBits): kept initially, then sent to "Others" due to minPercentage
+  { label: "Option Zeta",  score: 5 }   // Massive gap (> shiftBits): skipped instantly
 ];
 
 // Configuration parameters:
 const topK = 3;           // Display a maximum of 3 individual items
 const targetSum = 100;    // Target integer sum (e.g., 100 for percentages)
-const shiftBits = 5;      // Exponential sensitivity window
-const minPercentage = 5;  // Minimum UI threshold (%) to avoid being grouped into "Others"
+const shiftBits = 5;      // Exponential sensitivity window: drops any score with a gap greater than 5 points
+const minPercentage = 5;  // Minimum UI threshold (5%): Option Delta (~1.5%) falls below and moves to "Others"
 
 const results = soft2maxStreamingHeap(dataset, topK, targetSum, shiftBits, minPercentage);
 console.log(results);
 /*
 Output:
 [
-  { index: 0, label: 'Option Alpha', percentage: 46 },
-  { index: 1, label: 'Option Beta',  percentage: 25 },
-  { index: 3, label: 'Option Delta', percentage: 22 },
-  { index: -1, label: 'Others',       percentage: 7 }
+  { index: 0, label: 'Option Alpha', percentage: 86 },
+  { index: 1, label: 'Option Beta',  percentage: 11 },
+  { index: -1, label: 'Others',       percentage: 3 }
 ]
 // Total sum is exactly 100%
 */
