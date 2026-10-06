@@ -1,0 +1,48 @@
+{
+  "name": "soft2max-streaming",
+  "version": "1.0.0",
+  "description": "A hyper-optimized, single-pass approximation of the Softmax function using a Min-Heap, designed for real-time streaming UIs.",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rimraf dist",
+    "prebuild": "npm run clean",
+    "test": "node --experimental-vm-modules npx jest",
+    "test:coverage": "node --experimental-vm-modules npx jest --coverage",
+    "benchmark": "tsx scripts/benchmark.ts"
+  },
+  "keywords": [
+    "softmax",
+    "streaming",
+    "min-heap",
+    "optimization",
+    "bit-shifting",
+    "ui",
+    "performance",
+    "typescript"
+  ],
+  "author": "Soft2max Contributors",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com"
+  },
+  "bugs": {
+    "url": "https://github.com"
+  },
+  "homepage": "https://github.com",
+  "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.11.24",
+    "jest": "^29.7.0",
+    "rimraf": "^5.0.5",
+    "ts-jest": "^29.1.2",
+    "tsx": "^4.7.1",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
