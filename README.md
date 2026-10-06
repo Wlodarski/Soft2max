@@ -2,8 +2,8 @@
 
 A hyper-optimized, single-pass approximation of the Softmax function designed for real-time User Interfaces. It extracts top leaders, applies an exponential bit-shifting penalty to lesser scores, and aggregates the remaining long tail into an **"Others"** category—all while guaranteeing that final integer percentages always sum up to exactly 100%.
 
-[![License: MIT](https://shields.io)](https://opensource.org)
-[![Performance](https://shields.io)](#-benchmarks)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](https://opensource.org)
+[![Performance](https://img.shields.io/badge/Performance-Benchmarking-orange)](#-benchmarks)
 
 ---
 
