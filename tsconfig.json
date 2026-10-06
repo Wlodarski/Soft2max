@@ -5,6 +5,9 @@
     "module": "NodeNext",                        /* Standard de modules moderne adapté pour Node.js (ESM) */
     "moduleResolution": "NodeNext",              /* Stratégie de résolution des dépendances alignée sur NodeNext */
 
+    /* Configuration requise pour l'intégration de ts-jest et des builds ultra-rapides */
+    "isolatedModules": true,                     /* Assure que chaque fichier peut être transpilé de manière sûre et autonome */
+
     /* Génération des fichiers pour la distribution */
     "declaration": true,                         /* Génère automatiquement les fichiers .d.ts associés */
     "outDir": "./dist",                          /* Répertoire de destination pour les fichiers compilés */
@@ -13,7 +16,7 @@
     /* Vérifications strictes du compilateur */
     "strict": true,                              /* Active l'ensemble des vérifications de types strictes */
     "noImplicitAny": true,                       /* Interdit les expressions et déclarations avec un type 'any' implicite */
-    "strictNullChecks": true,                    /* Prend en compte explicitement 'null' et 'undefined' dans le typage */
+    "strictNullChecks": true,                    /* Prendre en compte explicitement 'null' et 'undefined' dans le typage */
     "strictFunctionTypes": true,                 /* Vérification rigoureuse des signatures de fonctions */
     "noImplicitThis": true,                      /* Lève une erreur si la valeur de 'this' est de type 'any' implicite */
     "alwaysStrict": true,                        /* Analyse chaque fichier en mode strict JS et émet 'use strict' */
@@ -27,7 +30,7 @@
     /* Paramètres d'interopérabilité et système */
     "esModuleInterop": true,                     /* Facilite l'importation de modules CommonJS traditionnels */
     "skipLibCheck": true,                        /* Accélère la compilation en ignorant la vérification des fichiers .d.ts externes */
-    "forceConsistentCasingInFileNames": true     /* Évite les problèmes de compilation entre systèmes d'exploitation (Mac/Linux/Windows) */
+    "forceConsistentCasingInFileNames": true     /* Évite les problèmes de compilation entre systèmes d'exploitation */
   },
   "include": [
     "src/**/*"                                   /* Inclut tous les fichiers du dossier src pour la compilation */

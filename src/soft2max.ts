@@ -153,23 +153,28 @@ export function soft2maxStreamingHeap(
     }
   }
 
-  // 6. Distribution finale et lissage des entiers (Loi des plus grands restes simplifiée)
+    // 6. Distribution finale et lissage des entiers
   const results: SoftmaxResult[] = [];
   let allocatedSum = 0;
 
   for (let i = 0; i < finalTop.length; i++) {
     const pct = Math.round((finalTop[i].weight / totalWeight) * maxInt);
-    allocatedSum += pct;
-    results.push({ index: finalTop[i].index, label: finalTop[i].label, percentage: pct });
+    // CORRECTION : On ignore les éléments dont le poids écrasé a donné 0% afin d'alléger l'UI
+    if (pct > 0) {
+      allocatedSum += pct;
+      results.push({ index: finalTop[i].index, label: finalTop[i].label, percentage: pct });
+    }
   }
 
   if (leftoverWeight > 0) {
     const pctAutres = Math.round((leftoverWeight / totalWeight) * maxInt);
-    allocatedSum += pctAutres;
-    results.push({ index: -1, label: "Autres", percentage: pctAutres });
+    if (pctAutres > 0) {
+      allocatedSum += pctAutres;
+      results.push({ index: -1, label: "Autres", percentage: pctAutres });
+    }
   }
 
-  // Ajustement final pour absorber les micro-écarts d'arrondis (ex: forcer 100%)
+  // Ajustement final pour absorber les micro-écarts d'arrondis
   const diffSum = maxInt - allocatedSum;
   if (diffSum !== 0 && results.length > 0) {
     results[0].percentage += diffSum;

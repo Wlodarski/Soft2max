@@ -10,7 +10,6 @@ export default {
       'ts-jest',
       {
         useESM: true,
-        isolatedModules: true, // Désactive la vérification globale des types par Jest pour accélérer l'exécution
       },
     ],
   },
