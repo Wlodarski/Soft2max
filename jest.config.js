@@ -1,17 +1,17 @@
 /** @type {import('ts-jest').JestConfigWithTsJest} */
 export default {
-  preset: 'ts-jest/preset/default-esm', // Active la gestion native du format ESM avec ts-jest
   testEnvironment: 'node',
   extensionsToTreatAsEsm: ['.ts'],
   moduleNameMapper: {
-    // Permet à Jest de comprendre les imports se terminant par '.js' dans les fichiers de code source compilés
+    // Permet à Jest de résoudre correctement les imports locaux terminant par '.js'
     '^(\\.\\.?\\/.+)\\.js$': '$1',
   },
   transform: {
+    // Transpile les fichiers TypeScript à la volée en conservant le format ESM
     '^.+\\.tsx?$': [
       'ts-jest',
       {
-        useESM: true, // Force ts-jest à compiler en ES Modules
+        useESM: true,
       },
     ],
   },
