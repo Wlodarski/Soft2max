@@ -9,15 +9,15 @@ A hyper-optimized, single-pass approximation of the Softmax function designed fo
 
 ## 🚀 Why Use Soft2max?
 
-Traditional Softmax functions require expensive floating-point arithmetic (`Math.exp`), multiple loops, and a global sort (\(O(N \log N)\)) to find top elements.
+Traditional Softmax functions require expensive floating-point arithmetic (`Math.exp`), multiple loops, and a global sort ($O(N \log N)$) to find top elements.
 
 **Soft2max** completely rethinks this process for UI streaming contexts:
 
-* **True Single-Pass (\(O(N \log K)\)):** Computes proportions and maintains the Top-K elements concurrently. Perfect for high-throughput streaming datasets.
-* **O(1) Memory Footprint:** Allocates no large intermediate arrays. It tracks only a micro-heap of size K, completely avoiding Garbage Collection overhead.
+* **True Single-Pass ($O(N \log K)$):** Computes proportions and maintains the Top-$K$ elements concurrently. Perfect for high-throughput streaming datasets.
+* **$O(1)$ Memory Footprint:** Allocates no large intermediate arrays. It tracks only a micro-heap of size $K$, completely avoiding Garbage Collection overhead.
 * **Ultra-Fast Bit Shifting:** Replaces costly exponential floating-point operations with a single-cycle CPU binary right-shift (`>>`).
 * **UI-Driven Long Tail Handling:** Automatically aggregates dropped or low-percentage elements into an `"Others"` category.
-* **Flawless Integer Rounding:** Employs a deterministic adjustment mechanism ensuring total percentages equal **exactly** `100%` (or your target sum) without float rounding anomalies (e.g., `99.9%` or `100.1%`).
+* **Flawless Integer Rounding:** Employs a deterministic adjustment mechanism ensuring total percentages equal **exactly** `100%` (or your target sum) without float-rounding anomalies (e.g., `99.9%` or `100.1%`).
 
 ---
 
@@ -55,15 +55,15 @@ If a new absolute maximum is discovered late in the loop, Soft2max calculates th
 
 ---
 
-## 🧮 Mathematical Framework: From \(e^x\) to \(2^x\) Bit-Shifting
+## 🧮 Mathematical Framework: From $e^x$ to $2^x$ Bit-Shifting
 
-The standard Softmax formula maps a vector of arbitrary real numbers \(z\) into a probability distribution where each value is proportional to its exponential scale:
+The standard Softmax formula maps a vector of arbitrary real numbers $z$ into a probability distribution where each value is proportional to its exponential scale:
 
 $$
 \sigma(z)_i = \frac{e^{z_i}}{\sum_{j=1}^{n} e^{z_j}}
 $$
 
-To prevent numerical overflow when computing large exponents, production systems employ the **Log-Sum-Exp** safety transformation (subtracting the maximum value \(z_{\max}\)):
+To prevent numerical overflow when computing large exponents, production systems employ the **Log-Sum-Exp** safety transformation (subtracting the maximum value $z_{\max}$):
 
 $$
 \sigma(z)_i = \frac{e^{z_i - z_{\max}}}{\sum_{j=1}^{n} e^{z_j - z_{\max}}}
@@ -71,7 +71,7 @@ $$
 
 ### The Bitwise Approximation
 
-While mathematically ideal, calculating floating-point transcendental functions like \(e^x\) requires dozens of clock cycles per element. **Soft2max** replaces Euler's number (e ≈ 2.718) with a base-2 exponent (2).
+While mathematically ideal, calculating floating-point transcendental functions like $e^x$ requires dozens of clock cycles per element. **Soft2max** replaces Euler's number ($e \approx 2.718$) with a base-2 exponent ($2$).
 
 By shifting the base, the exponentiation becomes a pure bit-shift operation, execution-mapped directly to a single-cycle CPU instruction:
 
@@ -79,7 +79,7 @@ $$
 e^{z_i - z_{\max}} \approx 2^{z_i - z_{\max}} = 2^{-\Delta_i} = \frac{1}{2^{\Delta_i}}
 $$
 
-Where \(\Delta_i = z_{\max} - z_i\). In integer arithmetic, this is computed using a configurable resolution anchor (`shiftBits`) acting as the base numerator:
+Where $\Delta_i = z_{\max} - z_i$. In integer arithmetic, this is computed using a configurable resolution anchor (`shiftBits`) acting as the base numerator:
 
 $$
 \text{weight}_i = \text{baseWeight} \gg \Delta_i = (1 \ll \text{shiftBits}) \gg (z_{\max} - z_i)
@@ -87,9 +87,9 @@ $$
 
 ### Dynamic Base Correction Under Streaming Constraints
 
-In a true streaming pipeline, the global \(z_{\max}\) is unknown until the very last element is read. If at index \(t\) a new maximum \(z_{\text{new}} > z_{\text{old}}\) is discovered, all previously computed weights are locked to the wrong frame of reference.
+In a true streaming pipeline, the global $z_{\max}$ is unknown until the very last element is read. If at index $t$ a new maximum $z_{\text{new}} > z_{\text{old}}$ is discovered, all previously computed weights are locked to the wrong frame of reference.
 
-Soft2max resolves this retroactively without restarting the loop. Let \(d = z_{\text{new}} - z_{\text{old}}\). The mathematical correction requires scaling down the historical weights by \(2^d\):
+Soft2max resolves this retroactively without restarting the loop. Let $d = z_{\text{new}} - z_{\text{old}}$. The mathematical correction requires scaling down the historical weights by $2^d$:
 
 $$
 \text{weight}_{\text{corrected}} = \frac{\text{weight}_{\text{old}}}{2^d} = \text{weight}_{\text{old}} \gg d
@@ -162,7 +162,7 @@ soft2maxStreamingHeap(inputs, topK, maxInt, shiftBits, minPercentage)
 
 When processing large production datasets (**500,000 items**), Soft2max thoroughly outperforms traditional `Math.exp` + global sort methods:
 
-* **Traditional Softmax:** `~32.50 ms` (Heavy memory allocation & \(O(N \log N)\) sorting bottleneck)
+* **Traditional Softmax:** `~32.50 ms` (Heavy memory allocation & $O(N \log N)$ sorting bottleneck)
 * **Soft2max (Streaming Heap):** `~2.80 ms` (Linear streaming & bit-shifting)
 
 🚀 **Result:** Soft2max runs roughly **11x faster** while utilizing drastically less CPU cache and memory.
