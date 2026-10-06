@@ -170,7 +170,7 @@ export function soft2maxStreamingHeap(
     const pctAutres = Math.round((leftoverWeight / totalWeight) * maxInt);
     if (pctAutres > 0) {
       allocatedSum += pctAutres;
-      results.push({ index: -1, label: "Autres", percentage: pctAutres });
+      results.push({ index: -1, label: "Others", percentage: pctAutres });
     }
   }
 
