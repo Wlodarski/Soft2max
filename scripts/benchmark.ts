@@ -107,7 +107,7 @@ const avgOpti = (endOpti - startOpti) / ITERATIONS;
 console.log(`Résultats moyens calculés sur ${ITERATIONS} itérations :`);
 console.log(`========================================================`);
 console.log(`🔴 Softmax Traditionnel (Flottants + Tri) : \x1b[31m${avgTrad.toFixed(2)} ms\x1b[0m`);
-console.log(`🟢 Votre Softmax (Streaming + Min-Heap)  : \x1b[32m${avgOpti.toFixed(2)} ms\x1b[0m`);
+console.log(`🟢 Sof2tmax (Streaming + Min-Heap)  : \x1b[32m${avgOpti.toFixed(2)} ms\x1b[0m`);
 console.log(`========================================================`);
 
 const speedup = avgTrad / avgOpti;
