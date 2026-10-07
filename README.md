@@ -168,9 +168,9 @@ When processing large production datasets (**500,000 items**), Soft2max thorough
 * **Traditional Softmax:** `~32.50 ms` (Heavy memory allocation & $O(N \log N)$ sorting bottleneck)
 * **Soft2max (Streaming Heap):** `~2.80 ms` (Linear streaming & bit-shifting)
 
-🚀 **Result:** Soft2max runs roughly **11x faster** while utilizing drastically less CPU cache and memory.
+🚀 **Result:** Soft2max runs at least **11x faster**, often more than **20x faster**, while using substantially less CPU cache and memory.
 
-### To Benchmark On Your Installation
+### Benchmark it on your installation
 
 Run `npm run benchmark`
 
